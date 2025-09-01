@@ -30,7 +30,7 @@ export default function Header({ setSidebarOpen }: Props) {
 
       {/* User Info */}
       <div className="flex items-center space-x-4">
-        <span className="text-gray-600">Hello, Syahril!</span>
+        <span className="text-gray-600 font-semibold">Hello, Syahril!</span>
         <img
           src={profil1}
           alt="avatar"
