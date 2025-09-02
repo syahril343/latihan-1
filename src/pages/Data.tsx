@@ -1,3 +1,5 @@
+import MainLayout from "../layouts/MainLayout"; // Layout
+
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import { useState } from "react";
@@ -160,63 +162,65 @@ const Data = () => {
 
   return (
     <>
-      {/* Header Atas */}
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <button
-          onClick={handleAdd}
-          className="flex items-center gap-2 px-3 py-2 bg-secondary text-white text-sm rounded-md hover:bg-secondary/90 transition"
-        >
-          Tambah
-          <Plus className="w-4 h-4" />
-        </button>
-
-        <input
-          type="text"
-          placeholder="Cari..."
-          className="border border-secondary rounded-full px-3 py-1.5 text-sm text-secondary outline-none focus:ring-2 focus:ring-secondary/50 bg-transparent"
-        />
-      </div>
-
-      {/* DataTable */}
-      <DataTable
-        columns={columns}
-        data={currentData}
-        noHeader
-        pagination={false}
-      />
-
-      {/* Custom Pagination */}
-      <div className="flex justify-center items-center gap-2 mt-4">
-        <button
-          className="px-3 py-1 border rounded disabled:opacity-50"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, i) => (
+      <MainLayout>
+        {/* Header Atas */}
+        <div className="flex items-center justify-between gap-4 mb-4">
           <button
-            key={i}
-            className={`px-3 py-1 border rounded ${
-              currentPage === i + 1
-                ? "bg-secondary text-white"
-                : "bg-white text-secondary"
-            }`}
-            onClick={() => handlePageChange(i + 1)}
+            onClick={handleAdd}
+            className="flex items-center gap-2 px-3 py-2 bg-secondary text-white text-sm rounded-md hover:bg-secondary/90 transition"
           >
-            {i + 1}
+            Tambah
+            <Plus className="w-4 h-4" />
           </button>
-        ))}
 
-        <button
-          className="px-3 py-1 border rounded disabled:opacity-50"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+          <input
+            type="text"
+            placeholder="Cari..."
+            className="border border-secondary rounded-full px-3 py-1.5 text-sm text-secondary outline-none focus:ring-2 focus:ring-secondary/50 bg-transparent"
+          />
+        </div>
+
+        {/* DataTable */}
+        <DataTable
+          columns={columns}
+          data={currentData}
+          noHeader
+          pagination={false}
+        />
+
+        {/* Custom Pagination */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            className="px-3 py-1 border rounded disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              className={`px-3 py-1 border rounded ${
+                currentPage === i + 1
+                  ? "bg-secondary text-white"
+                  : "bg-white text-secondary"
+              }`}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="px-3 py-1 border rounded disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </MainLayout>
     </>
   );
 };

@@ -1,6 +1,9 @@
+import MainLayout from "../layouts/MainLayout"; // Layout
+
 const Users = () => {
-    return (
-      <>
+  return (
+    <>
+      <MainLayout>
         <div className="space-y-4">
           <h1 className="text-2xl font-bold">Users page</h1>
           <p className="text-gray-700">
@@ -8,9 +11,9 @@ const Users = () => {
             terpisah.
           </p>
         </div>
-      </>
-    );
-  };
-  
-  export default Users;
-  
+      </MainLayout>
+    </>
+  );
+};
+
+export default Users;

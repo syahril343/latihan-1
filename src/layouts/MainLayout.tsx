@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.tsx
-import { ReactNode, useState } from "react";
+import {  useState, type ReactNode } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 
@@ -24,7 +24,7 @@ export default function MainLayout({ children }: Props) {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col md:ml-52">
+      <div className="flex-1 flex flex-col">
         <Header setSidebarOpen={setSidebarOpen} />
         <main className="flex-1 p-6 overflow-y-auto">{children}</main>
       </div>
