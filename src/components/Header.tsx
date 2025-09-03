@@ -1,7 +1,6 @@
 // src/components/Header.tsx
 import { Menu, Bell } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
 
 type Props = {
   setSidebarOpen: (val: boolean) => void;
@@ -9,9 +8,10 @@ type Props = {
 
 // mapping judul berdasarkan path
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
+  "/dashboard": "Dashboard",
   "/data": "Data",
-  "/users": "Users",
+  "/Users": "Users",
+  "/contact": "Contact",
 };
 
 export default function Header({ setSidebarOpen }: Props) {

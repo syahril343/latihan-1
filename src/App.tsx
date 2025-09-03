@@ -6,7 +6,8 @@ import LoginPage from "./pages/auth/Login";
 import GetBranches from "./pages/auth/get_branches";
 import DashboardPage from "./pages/Dashboard";
 import DataPage from "./pages/Data";
-import UsersPage from "./pages/Users";
+import Users from "./pages/Users";
+import ContactPage from "./pages/Contact/ContactPage";
 
 const App = () => {
   return (
@@ -18,7 +19,8 @@ const App = () => {
           {/* <Route path="/register" element={<RegisterPage />} /> */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/data" element={<DataPage />} />
-          <Route path="/users" element={<UsersPage />} />
+          <Route path="/Users" element={<Users />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </Router>
     </>

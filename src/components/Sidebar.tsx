@@ -10,6 +10,7 @@ import {
   UserPen,
   LogOut,
   Settings,
+  Contact,
 } from "lucide-react";
 
 const myNav = [
@@ -23,7 +24,9 @@ const myNav = [
     path: "/data",
     icon: <Database className="w-5 h-5" />,
   },
-  { label: "Users", path: "/users", icon: <UserPen className="w-5 h-5" /> },
+  { label: "Users", path: "/Users", icon: <UserPen className="w-5 h-5" /> },
+  { label: "Contact", path: "/contact", icon: <Contact className="w-5 h-5" /> },
+
 ];
 
 type Props = {

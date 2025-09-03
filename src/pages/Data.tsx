@@ -181,7 +181,7 @@ const Data = () => {
           <div>
             <button
               onClick={handleAdd}
-              className="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm rounded-md hover:bg-secondary transition"
+              className="flex items-center px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-700 transition"
             >
               Tambah
               <Plus className="w-4 h-4" />
