@@ -1,6 +1,6 @@
 import MainLayout from "../layouts/MainLayout"; // Layout
 
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -21,12 +21,23 @@ const initialData: DataRow[] = [
   { id: 7, title: "Collateral Damage", year: "2002" },
   { id: 8, title: "The Matrix", year: "1999" },
   { id: 9, title: "Inception", year: "2010" },
+  { id: 10, title: "Conan the Barbarian", year: "1982" },
+  { id: 11, title: "Conan the Barbarian", year: "1982" },
+  { id: 12, title: "The Terminator", year: "1984" },
+  { id: 13, title: "Predator", year: "1987" },
+  { id: 14, title: "Total Recall", year: "1990" },
+  { id: 15, title: "True Lies", year: "1994" },
+  { id: 16, title: "Eraser", year: "1996" },
+  { id: 17, title: "Collateral Damage", year: "2002" },
+  { id: 18, title: "The Matrix", year: "1999" },
+  { id: 19, title: "Inception", year: "2010" },
+  { id: 20, title: "Inception", year: "2010" },
 ];
 
 const Data = () => {
   const [data, setData] = useState<DataRow[]>(initialData);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 7;
+  const rowsPerPage = 13;
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
@@ -160,25 +171,38 @@ const Data = () => {
     },
   ];
 
+  const [search, setSearch] = useState("");
+
   return (
     <>
       <MainLayout>
         {/* Header Atas */}
-        <div className="flex items-center justify-between gap-4 mb-4">
-          <button
-            onClick={handleAdd}
-            className="flex items-center gap-2 px-3 py-2 bg-secondary text-white text-sm rounded-md hover:bg-secondary/90 transition"
-          >
-            Tambah
-            <Plus className="w-4 h-4" />
-          </button>
+        <div className="flex items-center justify-between  mb-4">
+          <div>
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm rounded-md hover:bg-secondary transition"
+            >
+              Tambah
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Cari..."
-            className="border border-secondary rounded-full px-3 py-1.5 text-sm text-secondary outline-none focus:ring-2 focus:ring-secondary/50 bg-transparent"
-          />
-        </div>
+          {/* Search Input Modern */}
+          
+            <div className="relative w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300
+                       focus:ring-1 focus:ring-primary
+                       transition-all outline-none"
+              />
+            </div>
+          </div>
 
         {/* DataTable */}
         <DataTable
@@ -202,9 +226,7 @@ const Data = () => {
             <button
               key={i}
               className={`px-3 py-1 border rounded ${
-                currentPage === i + 1
-                  ? "bg-secondary text-white"
-                  : "bg-white text-secondary"
+                currentPage === i + 1 ? "bg-primary text-white" : "bg-white "
               }`}
               onClick={() => handlePageChange(i + 1)}
             >

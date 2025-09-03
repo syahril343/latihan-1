@@ -9,7 +9,7 @@ import {
   Database,
   UserPen,
   LogOut,
-  Ellipsis,
+  Settings,
 } from "lucide-react";
 
 const myNav = [
@@ -44,7 +44,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
       <div className="flex-1">
         {/* Header logo */}
         <div className="relative flex items-center justify-center px-6 py-4">
-          <h1 className="text-xl font-bold text-white">Viemedika</h1>
+          <h1 className="text-3xl font-bold text-white">Viemedika</h1>
 
           {/* Tombol close di pojok kanan */}
           <button
@@ -77,15 +77,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
       </div>
 
       {/* Bagian bawah (Profile) */}
-      <div className="p-4 bg-blue-300/50 justify-center rounded-xl">
-        <img src={fotoProfil} alt="Profile" className="w-20 rounded-lg" />
-        <div className="flex text-white">
-          <div>
+      <div className="p-6 bg-blue-300/50 rounded-2xl space-y-6 w-48 mx-auto">
+        <div className="flex justify-center">
+          <img src={fotoProfil} alt="Profile" className="w-20 rounded-lg" />
+        </div>
+        <div className="flex justify-evenly text-white">
+          <Link to="/">
             <LogOut />
-          </div>
-          <div>
-            <Ellipsis />
-          </div>
+          </Link>
+          <button>
+            <Settings />
+          </button>
         </div>
       </div>
     </div>
