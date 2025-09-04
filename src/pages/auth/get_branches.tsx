@@ -20,6 +20,18 @@ interface Branch {
 const BaseUrl = import.meta.env.VITE_BASE_URL;
 
 export default function GetBranches() {
+// menampilkan branches list
+// if => ngecek ada gak authToken di local storage
+// if isset authToken => valid / expired
+/* if valid => {
+  "branch_id": "BRC193059EV8ZDC",
+  "user_id": "USR93931038Y5XZ",
+  "user_role": "superadmin"
+}*/
+// if ketemu => dashboard
+// if tidak => lanjut tampilkan halaman branches list
+
+
   const [branches, setBranches] = useState<Branch[]>([]);
   const navigate = useNavigate();
 
@@ -59,7 +71,7 @@ export default function GetBranches() {
 
       if (res.data.status === "success") {
         // Simpan branch terpilih di localStorage (opsional)
-        localStorage.setItem("selectedBranch", branchId);
+        localStorage.setItem("authToken", res.data.data);
         navigate("/dashboard");
       }
     } catch (error) {

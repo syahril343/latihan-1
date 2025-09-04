@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import AuthLayout from "../../layouts/AuthLayout"; // Layout
+import Swal from "sweetalert2";
+import AuthLayout from "../../layouts/AuthLayout";
 
 // images
 import img1 from "../../assets/images/images/login-image.svg";
-
 // icons
 import { Mail, Lock } from "lucide-react";
 
@@ -15,36 +15,44 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg("");
     setLoading(true);
 
     try {
       const res = await fetch(`${BaseUrl}/api/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.status === "success") {
-        // Simpan token sementara
         localStorage.setItem("authToken", data.data);
 
-        // Redirect ke halaman branches
+        Swal.fire({
+          icon: "success",
+          title: "Login berhasil!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
         navigate("/get_branches");
       } else {
-        setErrorMsg(data.message || "Login gagal, coba lagi.");
+        Swal.fire({
+          icon: "error",
+          title: "Login gagal",
+          text: data.message || "Username/password salah.",
+        });
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      setErrorMsg("Terjadi kesalahan server. Silakan coba lagi.");
+    } catch {
+      Swal.fire({
+        icon: "error",
+        title: "Terjadi kesalahan",
+        text: "Server tidak dapat dihubungi.",
+      });
     } finally {
       setLoading(false);
     }
@@ -93,10 +101,6 @@ const Login = () => {
               />
             </div>
           </div>
-
-          {errorMsg && (
-            <p className="text-red-500 text-sm text-center">{errorMsg}</p>
-          )}
 
           <button
             type="submit"

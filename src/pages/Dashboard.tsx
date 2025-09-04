@@ -26,6 +26,16 @@ const data = [
 ];
 
 const Dashboard = () => {
+// if => ngecek ada gak authToken di local storage
+// if isset authToken => valid / expired
+/* if valid => {
+  "branch_id": "BRC193059EV8ZDC",
+  "user_id": "USR93931038Y5XZ",
+  "user_role": "superadmin"
+}*/
+// if ketemu => dashboard
+// if tidak => lanjut tampilkan halaman branches list
+
   return (
     <>
       <MainLayout>

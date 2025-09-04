@@ -1,35 +1,51 @@
 // src/components/Contact/ContactForm.tsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Di sini Anda akan menambahkan logika untuk mengirim data
-    // misalnya menggunakan fetch, axios, atau emailjs.
-    console.log('Data Formulir:', formData);
-    alert('Pesan Anda telah terkirim! (Lihat console log)');
-    // Reset formulir setelah submit
-    setFormData({ name: '', email: '', subject: '', message: '' });
+
+    // Contoh kirim data (masih console.log)
+    console.log("Data Formulir:", formData);
+
+    // SweetAlert2 sukses
+    Swal.fire({
+      title: "Berhasil!",
+      text: "Pesan Anda telah terkirim 🎉",
+      icon: "success",
+      confirmButtonColor: "#2563eb", // biru Tailwind
+    });
+
+    // Reset form setelah submit
+    setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Kirimkan Kami Pesan</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Kirimkan Kami Pesan
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Nama Lengkap
           </label>
           <input
@@ -44,7 +60,10 @@ const ContactForm: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Alamat Email
           </label>
           <input
@@ -59,7 +78,10 @@ const ContactForm: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="subject"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Subjek
           </label>
           <input
@@ -74,7 +96,10 @@ const ContactForm: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="message"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Pesan
           </label>
           <textarea
