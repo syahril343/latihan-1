@@ -10,6 +10,14 @@ import { Mail, Lock } from "lucide-react";
 
 const BaseUrl = import.meta.env.VITE_BASE_URL;
 
+// --- definisi tipe response dari backend ---
+interface LoginResponse {
+  status: string;
+  data?: string;   // token atau payload
+  token?: string;  // jika backend pakai field token
+  message?: string;
+}
+
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -27,10 +35,17 @@ const Login = () => {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json();
+      let data: LoginResponse | null = null;
+      try {
+        data = (await res.json()) as LoginResponse;
+        console.log("📥 Response JSON:", data);
+      } catch (err) {
+        console.error("❌ Gagal parse JSON:", err);
+      }
 
-      if (res.ok && data.status === "success") {
-        localStorage.setItem("authToken", data.data);
+      if (res.ok && data?.status === "success") {
+        // simpan token ke localStorage (data.data / data.token tergantung backend)
+        localStorage.setItem("authToken", data.data || data.token || "");
 
         Swal.fire({
           icon: "success",
@@ -44,14 +59,15 @@ const Login = () => {
         Swal.fire({
           icon: "error",
           title: "Login gagal",
-          text: data.message || "Username/password salah.",
+          text: data?.message || "Username/password salah.",
         });
       }
-    } catch {
+    } catch (err) {
+      console.error("❌ Error saat fetch:", err);
       Swal.fire({
         icon: "error",
         title: "Terjadi kesalahan",
-        text: "Server tidak dapat dihubungi.",
+        text: err instanceof Error ? err.message : "Server tidak dapat dihubungi.",
       });
     } finally {
       setLoading(false);

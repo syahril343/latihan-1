@@ -1,46 +1,18 @@
-import { useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 
-const BaseUrl = import.meta.env.VITE_BASE_URL;
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
 
-const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const [isValid, setIsValid] = useState<boolean | null>(null);
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const token = localStorage.getItem("authToken");
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      setIsValid(false);
-      return;
-    }
-
-    fetch(`${BaseUrl}/api/check-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          setIsValid(true);
-        } else {
-          localStorage.removeItem("authToken");
-          setIsValid(false);
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem("authToken");
-        setIsValid(false);
-      });
-  }, []);
-
-  if (isValid === null) {
-    return <div className="text-center mt-10">🔄 Checking session...</div>;
+  if (!token) {
+    return <Navigate to="/" replace />;
   }
 
-  return isValid ? <>{children}</> : <Navigate to="/" replace />;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

@@ -1,9 +1,15 @@
-// src/components/Contact/ContactForm.tsx
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     subject: "",
@@ -19,86 +25,58 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Contoh kirim data (masih console.log)
     console.log("Data Formulir:", formData);
 
-    // SweetAlert2 sukses
     Swal.fire({
       title: "Berhasil!",
       text: "Pesan Anda telah terkirim 🎉",
       icon: "success",
-      confirmButtonColor: "#2563eb", // biru Tailwind
+      confirmButtonColor: "#2563eb",
     });
 
-    // Reset form setelah submit
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6 transition-colors">
         Kirimkan Kami Pesan
       </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Nama Lengkap
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 transition"
-            placeholder="John Doe"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Alamat Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 transition"
-            placeholder="anda@email.com"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="subject"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Subjek
-          </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 transition"
-            placeholder="Tuliskan subjek pesan Anda"
-          />
-        </div>
+        {(["name", "email", "subject"] as (keyof FormData)[]).map((field) => (
+          <div key={field}>
+            <label
+              htmlFor={field}
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 transition-colors"
+            >
+              {field === "name"
+                ? "Nama Lengkap"
+                : field === "email"
+                ? "Alamat Email"
+                : "Subjek"}
+            </label>
+            <input
+              type={field === "email" ? "email" : "text"}
+              id={field}
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 transition-colors"
+              placeholder={
+                field === "name"
+                  ? "John Doe"
+                  : field === "email"
+                  ? "anda@email.com"
+                  : "Tuliskan subjek pesan Anda"
+              }
+            />
+          </div>
+        ))}
         <div>
           <label
             htmlFor="message"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 transition-colors"
           >
             Pesan
           </label>
@@ -109,13 +87,13 @@ const ContactForm: React.FC = () => {
             value={formData.message}
             onChange={handleChange}
             required
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 transition-colors"
             placeholder="Tuliskan pesan Anda di sini..."
           ></textarea>
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          className="w-full bg-primary dark:bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
         >
           Kirim Pesan
         </button>

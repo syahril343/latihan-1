@@ -1,3 +1,4 @@
+// src/components/Sidebar.tsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -6,7 +7,6 @@ import Swal from "sweetalert2";
 import fotoProfil from "../assets/images/profil.jpeg";
 // icons
 import {
-  X,
   LayoutDashboard,
   Database,
   UserPen,
@@ -25,13 +25,13 @@ const myNav = [
 type Props = {
   sidebarOpen: boolean;
   setSidebarOpen: (val: boolean) => void;
+  darkMode?: boolean; // 🔹 new prop
 };
 
-export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
+export default function Sidebar({ darkMode }: Props) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🔹 State modal & profile
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState({
     name: "John Doe",
@@ -54,19 +54,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
       cancelButtonColor: "#3085d6",
     }).then((result) => {
       if (result.isConfirmed) {
+        localStorage.removeItem("authToken");
         Swal.fire({
           title: "Logout berhasil!",
           text: "Anda sudah keluar dari aplikasi.",
           icon: "success",
           confirmButtonColor: "#2563eb",
-        }).then(() => {
-          navigate("/");
-        });
+        }).then(() => navigate("/"));
       }
     });
   };
 
-  // 🔹 Handle form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -97,128 +95,156 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
 
   return (
     <div
-      className={`relative z-20 inset-y-0 left-0 px-4 py-3 w-64 bg-gradient-to-b from-primary to-blue-400 shadow-md transform  
-      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-      transition-transform duration-300 ease-in-out md:translate-x-0 flex flex-col`}
+      className={`
+        relative z-20 inset-y-0 left-0 px-2 py-3
+        w-20 md:w-64
+        flex flex-col transition-all duration-300
+        ${darkMode
+          ? "bg-gray-900 text-white shadow-lg"
+          : "bg-gradient-to-b from-primary to-blue-400 text-white shadow-md"}
+      `}
     >
       {/* Bagian atas */}
       <div className="flex-1">
-        <div className="relative flex items-center justify-center px-6 py-4">
-          <h1 className="text-3xl font-bold text-white">Viemedika</h1>
-          <button
-            className="absolute right-6 md:hidden"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
+        <div className="flex items-center justify-center px-6 py-4">
+          <h1 className="hidden md:block text-3xl font-bold">Viemedika</h1>
+          <h1 className="md:hidden text-xl font-bold">V</h1>
         </div>
 
         {/* Navigation */}
-        <nav className="mt-4 flex flex-col space-y-2 px-4">
+        <nav className="mt-4 flex flex-col space-y-2 px-2">
           {myNav.map((item, i) => {
             const active = location.pathname === item.path;
             return (
               <Link
                 key={i}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-white transition ${
-                  active ? "bg-white/20 font-semibold" : "hover:bg-white/10"
-                }`}
-                onClick={() => setSidebarOpen(false)}
+                className={`group relative flex items-center justify-center md:justify-start gap-3 px-3 py-2 rounded-lg transition
+                  ${active
+                    ? darkMode
+                      ? "bg-gray-700 font-semibold"
+                      : "bg-white/20 font-semibold"
+                    : darkMode
+                      ? "hover:bg-gray-800"
+                      : "hover:bg-white/10"
+                  }
+                `}
               >
                 {item.icon}
-                <span>{item.label}</span>
+                <span className="hidden md:inline">{item.label}</span>
+                <span
+                  className="absolute left-14 md:hidden opacity-0 group-hover:opacity-100
+                             bg-black text-white text-xs px-2 py-1 rounded-md transition-opacity"
+                >
+                  {item.label}
+                </span>
               </Link>
             );
           })}
         </nav>
       </div>
 
-      {/* Bagian bawah (Profile + tombol) */}
-      <div className="p-6 bg-blue-300/50 rounded-2xl space-y-6 w-48 mx-auto">
-        <div className="flex justify-center">
-          <img src={fotoProfil} alt="Profile" className="w-20 rounded-lg" />
-        </div>
-        <div className="flex justify-evenly text-white">
-          <button onClick={handleLogout}>
+      {/* Bagian bawah */}
+      <div className="p-4 flex flex-col items-center md:w-48 md:mx-auto md:space-y-4">
+        <img
+          src={fotoProfil}
+          alt="Profile"
+          className="hidden md:block w-20 rounded-lg"
+        />
+
+        <div className="flex justify-center md:justify-evenly w-full">
+          <button onClick={handleLogout} className="text-white">
             <LogOut />
           </button>
-          <button onClick={() => setIsModalOpen(true)}>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="hidden md:block text-white"
+          >
             <Settings />
           </button>
         </div>
       </div>
 
-      {/* 🔹 Modal Edit Profile */}
+      {/* Modal Edit Profil */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-30">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+          <div
+            className={`p-6 rounded-xl shadow-lg w-full max-w-md
+              ${darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}
+            `}
+          >
             <h2 className="text-xl font-bold mb-4">Edit Profil</h2>
             <form onSubmit={handleSave} className="space-y-4">
-              {/* Nama */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Nama</label>
+                <label className="block text-sm font-medium">Nama</label>
                 <input
                   type="text"
                   name="name"
                   value={profile.name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
-              {/* Username */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Username</label>
+                <label className="block text-sm font-medium">Username</label>
                 <input
                   type="text"
                   name="username"
                   value={profile.username}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
-              {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <label className="block text-sm font-medium">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={profile.email}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
-              {/* Password Lama */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Password Lama</label>
+                <label className="block text-sm font-medium">Password Lama</label>
                 <input
                   type="password"
                   name="oldPassword"
                   value={profile.oldPassword}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
-              {/* Password Baru */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Password Baru</label>
+                <label className="block text-sm font-medium">Password Baru</label>
                 <input
                   type="password"
                   name="newPassword"
                   value={profile.newPassword}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
-              {/* Konfirmasi Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
+                <label className="block text-sm font-medium">Konfirmasi Password</label>
                 <input
                   type="password"
                   name="confirmPassword"
                   value={profile.confirmPassword}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+                  className={`w-full p-2 border rounded-lg focus:ring ${
+                    darkMode ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500" : "border-gray-300 focus:ring-blue-300"
+                  }`}
                 />
               </div>
 
@@ -226,13 +252,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: Props) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+                  className={`px-4 py-2 rounded-lg ${
+                    darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-300 hover:bg-gray-400"
+                  }`}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    darkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
+                  }`}
                 >
                   Simpan
                 </button>

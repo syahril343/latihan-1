@@ -1,16 +1,8 @@
-import MainLayout from "../layouts/MainLayout"; // Layout
-
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
-import DataTable, { type TableColumn } from "react-data-table-component";
 import { useState } from "react";
-import Swal from "sweetalert2";
+import { Plus, Edit, Trash2, Search } from "lucide-react";
+import MainLayout from "../layouts/MainLayout";
 
-type DataRow = {
-  id: number;
-  title: string;
-  year: string;
-};
-
+type DataRow = { id: number; title: string; year: string; };
 const initialData: DataRow[] = [
   { id: 1, title: "Conan the Barbarian", year: "1982" },
   { id: 2, title: "The Terminator", year: "1984" },
@@ -18,232 +10,78 @@ const initialData: DataRow[] = [
   { id: 4, title: "Total Recall", year: "1990" },
   { id: 5, title: "True Lies", year: "1994" },
   { id: 6, title: "Eraser", year: "1996" },
-  { id: 7, title: "Collateral Damage", year: "2002" },
-  { id: 8, title: "The Matrix", year: "1999" },
-  { id: 9, title: "Inception", year: "2010" },
-  { id: 10, title: "Conan the Barbarian", year: "1982" },
-  { id: 11, title: "Conan the Barbarian", year: "1982" },
-  { id: 12, title: "The Terminator", year: "1984" },
-  { id: 13, title: "Predator", year: "1987" },
-  { id: 14, title: "Total Recall", year: "1990" },
-  { id: 15, title: "True Lies", year: "1994" },
-  { id: 16, title: "Eraser", year: "1996" },
-  { id: 17, title: "Collateral Damage", year: "2002" },
-  { id: 18, title: "The Matrix", year: "1999" },
-  { id: 19, title: "Inception", year: "2010" },
-  { id: 20, title: "Inception", year: "2010" },
 ];
 
 const Data = () => {
-  const [data, setData] = useState<DataRow[]>(initialData);
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 13;
-
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const currentData = data.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(data.length / rowsPerPage);
-
-  const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) setCurrentPage(page);
-  };
-
-  // Tambah Data
-  const handleAdd = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Tambah Data",
-      html:
-        '<input id="swal-input1" class="swal2-input" placeholder="Title">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Year">',
-      focusConfirm: false,
-      preConfirm: () => {
-        const title = (
-          document.getElementById("swal-input1") as HTMLInputElement
-        ).value;
-        const year = (
-          document.getElementById("swal-input2") as HTMLInputElement
-        ).value;
-        if (!title || !year) {
-          Swal.showValidationMessage("Semua field harus diisi");
-          return null;
-        }
-        return { title, year };
-      },
-      showCancelButton: true,
-    });
-
-    if (formValues) {
-      const newData: DataRow = {
-        id: data.length + 1,
-        title: formValues.title,
-        year: formValues.year,
-      };
-      setData([...data, newData]);
-      Swal.fire("Berhasil!", "Data berhasil ditambahkan.", "success");
-    }
-  };
-
-  // Edit Data
-  const handleUpdate = (row: DataRow) => {
-    Swal.fire({
-      title: `Edit Data ID: ${row.id}`,
-      html:
-        `<input id="swal-input1" class="swal2-input" placeholder="Title" value="${row.title}">` +
-        `<input id="swal-input2" class="swal2-input" placeholder="Year" value="${row.year}">`,
-      focusConfirm: false,
-      preConfirm: () => {
-        const title = (
-          document.getElementById("swal-input1") as HTMLInputElement
-        ).value;
-        const year = (
-          document.getElementById("swal-input2") as HTMLInputElement
-        ).value;
-        if (!title || !year) {
-          Swal.showValidationMessage("Semua field harus diisi");
-          return null;
-        }
-        return { title, year };
-      },
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        const updatedData = data.map((d) =>
-          d.id === row.id
-            ? { ...d, title: result.value.title, year: result.value.year }
-            : d
-        );
-        setData(updatedData);
-        Swal.fire("Tersimpan!", `Data ID ${row.id} diperbarui.`, "success");
-      }
-    });
-  };
-
-  // Hapus Data
-  const handleDelete = (row: DataRow) => {
-    Swal.fire({
-      title: "Yakin?",
-      text: `Data ID ${row.id} akan dihapus!`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, hapus!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const filteredData = data.filter((d) => d.id !== row.id);
-        setData(filteredData);
-        Swal.fire(
-          "Terhapus!",
-          `Data ID ${row.id} berhasil dihapus.`,
-          "success"
-        );
-      }
-    });
-  };
-
-  const columns: TableColumn<DataRow>[] = [
-    { name: "ID", selector: (row) => row.id, width: "80px" },
-    { name: "Title", selector: (row) => row.title },
-    {
-      name: "Year",
-      selector: (row) => row.year,
-      sortable: true,
-      width: "120px",
-    },
-    {
-      name: "Actions",
-      cell: (row) => (
-        <div className="flex gap-2">
-          <button
-            onClick={() => handleUpdate(row)}
-            className="p-1 rounded bg-blue-500 text-white hover:bg-blue-600"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => handleDelete(row)}
-            className="p-1 rounded bg-red-500 text-white hover:bg-red-600"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      ),
-      width: "120px",
-    },
-  ];
-
+  const [data] = useState<DataRow[]>(initialData);
   const [search, setSearch] = useState("");
 
+  const filteredData = data.filter(
+    (d) =>
+      d.title.toLowerCase().includes(search.toLowerCase()) ||
+      d.year.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <>
-      <MainLayout>
-        {/* Header Atas */}
-        <div className="flex items-center justify-between  mb-4">
-          <div>
-            <button
-              onClick={handleAdd}
-              className="flex items-center px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-700 transition"
-            >
-              Tambah
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Search Input Modern */}
-          
-            <div className="relative w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300
-                       focus:ring-1 focus:ring-primary
-                       transition-all outline-none"
-              />
-            </div>
-          </div>
-
-        {/* DataTable */}
-        <DataTable
-          columns={columns}
-          data={currentData}
-          noHeader
-          pagination={false}
-        />
-
-        {/* Custom Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-4">
+    <MainLayout>
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
+        {/* Header + Search */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <button
-            className="px-3 py-1 border rounded disabled:opacity-50"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            onClick={() => {}}
+            className="ripple flex items-center px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-700 transition relative overflow-hidden"
           >
-            Prev
+            Add Data <Plus className="w-4 h-4 ml-1" />
           </button>
-
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i}
-              className={`px-3 py-1 border rounded ${
-                currentPage === i + 1 ? "bg-primary text-white" : "bg-white "
-              }`}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-
-          <button
-            className="px-3 py-1 border rounded disabled:opacity-50"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-1 focus:ring-primary outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors"
+            />
+          </div>
         </div>
-      </MainLayout>
-    </>
+
+        {/* Table */}
+        <div className="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-xl transition-colors">
+          <table className="min-w-full text-left text-gray-900 dark:text-gray-100">
+            <thead>
+              <tr className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm">
+                <th className="px-6 py-3">Title</th>
+                <th className="px-6 py-3">Year</th>
+                <th className="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.map((row) => (
+                <tr key={row.id} className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                  <td className="px-6 py-3">{row.title}</td>
+                  <td className="px-6 py-3">{row.year}</td>
+                  <td className="px-6 py-3 text-center space-x-2">
+                    <button className="p-2 rounded-lg bg-yellow-100 text-yellow-600 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-400 dark:hover:bg-yellow-800">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:hover:bg-red-800">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {filteredData.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="text-center text-gray-500 dark:text-gray-400 py-6 italic">
+                    No data found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </MainLayout>
   );
 };
 
