@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import AuthLayout from "../../layouts/AuthLayout"; // Layout
+import AuthLayout from "../../layouts/AuthLayout";
 import cabangImg from "../../assets/images/images/cabangImg.svg";
 import { Store } from "lucide-react";
 
@@ -23,68 +23,61 @@ export default function GetBranches() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
+    const fetchBranches = async () => {
+      const loginToken = localStorage.getItem("loginToken");
+      if (!loginToken) {
         navigate("/");
         return;
       }
 
       try {
-        // 1. Cek profile → validasi token
-        const profileRes = await axios.get(`${BaseUrl}/api/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
+        // ambil daftar branches
+        const res = await axios.get(`${BaseUrl}/api/branches_combo`, {
+          headers: { Authorization: `Bearer ${loginToken}` },
         });
 
-        if (profileRes.status !== 200) {
-          localStorage.removeItem("authToken");
-          navigate("/");
-          return;
-        }
-
-        // 2. Ambil branches list
-        const branchRes = await axios.get(`${BaseUrl}/api/branches_combo`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (branchRes.data.status === "success") {
-          setBranches(branchRes.data.data);
+        if (res.data.status === "success") {
+          setBranches(res.data.data);
         } else {
-          localStorage.removeItem("authToken");
+          localStorage.removeItem("loginToken");
           navigate("/");
         }
       } catch (err) {
         console.error(err);
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("loginToken");
         navigate("/");
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
+    fetchBranches();
   }, [navigate]);
 
   const handleSelectBranch = async (branchId: string) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) return;
+    const loginToken = localStorage.getItem("loginToken");
+    if (!loginToken) return;
 
     try {
       const res = await axios.post(
         `${BaseUrl}/api/set_branch`,
         { branch_id: branchId },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${loginToken}` },
         }
       );
 
       if (res.data.status === "success") {
+        // simpan final token dan branch info
+        localStorage.removeItem("loginToken");
         localStorage.setItem("authToken", res.data.data);
+        localStorage.setItem("branchToken", branchId); // ✅ simpan branch
+
         navigate("/dashboard");
       }
     } catch (error) {
       console.error(error);
-      alert("Gagal memilih branch");
+      alert("Gagal memilih cabang");
     }
   };
 

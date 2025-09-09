@@ -10,11 +10,10 @@ import { Mail, Lock } from "lucide-react";
 
 const BaseUrl = import.meta.env.VITE_BASE_URL;
 
-// --- definisi tipe response dari backend ---
 interface LoginResponse {
   status: string;
-  data?: string;   // token atau payload
-  token?: string;  // jika backend pakai field token
+  data?: string;   // loginToken
+  token?: string;  // fallback kalau backend pakai field ini
   message?: string;
 }
 
@@ -35,17 +34,16 @@ const Login = () => {
         body: JSON.stringify({ username, password }),
       });
 
-      let data: LoginResponse | null = null;
-      try {
-        data = (await res.json()) as LoginResponse;
-        console.log("📥 Response JSON:", data);
-      } catch (err) {
-        console.error("❌ Gagal parse JSON:", err);
-      }
+      const data = (await res.json()) as LoginResponse;
+      console.log("📥 Login Response:", data);
 
       if (res.ok && data?.status === "success") {
-        // simpan token ke localStorage (data.data / data.token tergantung backend)
-        localStorage.setItem("authToken", data.data || data.token || "");
+        // ✅ simpan loginToken (sementara, sebelum pilih cabang)
+        localStorage.setItem("loginToken", data.data || data.token || "");
+
+        // bersihkan authToken & branchToken lama kalau ada
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("branchToken");
 
         Swal.fire({
           icon: "success",
@@ -63,7 +61,7 @@ const Login = () => {
         });
       }
     } catch (err) {
-      console.error("❌ Error saat fetch:", err);
+      console.error("❌ Error login:", err);
       Swal.fire({
         icon: "error",
         title: "Terjadi kesalahan",

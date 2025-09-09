@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; //router
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // pages
 import LoginPage from "./pages/auth/Login";
-import GetBranches from "./pages/auth/get_branches";
+import GetBranches from "./pages/auth/Get_Branches";
 import DashboardPage from "./pages/Dashboard";
 import DataPage from "./pages/Data";
 import Users from "./pages/Users";
@@ -15,7 +15,17 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* Login tetap di-wrap supaya dicegah akses setelah login */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <LoginPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Get Branches */}
         <Route
           path="/get_branches"
           element={
@@ -24,6 +34,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -32,6 +44,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Data */}
         <Route
           path="/data"
           element={
@@ -40,6 +54,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Users */}
         <Route
           path="/users"
           element={
@@ -48,6 +64,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Contact */}
         <Route
           path="/contact"
           element={

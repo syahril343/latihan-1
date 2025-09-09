@@ -43,27 +43,33 @@ export default function Sidebar({ darkMode }: Props) {
   });
 
   const handleLogout = () => {
-    Swal.fire({
-      title: "Yakin mau logout?",
-      text: "Anda akan keluar dari aplikasi.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, logout",
-      cancelButtonText: "Batal",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.removeItem("authToken");
-        Swal.fire({
-          title: "Logout berhasil!",
-          text: "Anda sudah keluar dari aplikasi.",
-          icon: "success",
-          confirmButtonColor: "#2563eb",
-        }).then(() => navigate("/"));
-      }
-    });
-  };
+  Swal.fire({
+    title: "Yakin mau logout?",
+    text: "Anda akan keluar dari aplikasi.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, logout",
+    cancelButtonText: "Batal",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // 🔹 Hapus semua token saat logout
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("branchToken");
+
+      Swal.fire({
+        title: "Logout berhasil!",
+        text: "Anda sudah keluar dari aplikasi.",
+        icon: "success",
+        confirmButtonColor: "#2563eb",
+      }).then(() => {
+        navigate("/", { replace: true }); // pastikan tidak bisa back ke dashboard
+      });
+    }
+  });
+};
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

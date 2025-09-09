@@ -14,7 +14,7 @@ interface User {
 const Users = () => {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "Syahril", email: "syahril@mail.com", role: "Admin", status: "Active" },
+    { id: 1, name: "Teguh", email: "teguh@mail.com", role: "Admin", status: "Active" },
     { id: 2, name: "Budi", email: "budi@mail.com", role: "User", status: "Inactive" },
     { id: 3, name: "Ani", email: "ani@mail.com", role: "User", status: "Active" },
   ]);
